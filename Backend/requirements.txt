@@ -4,3 +4,4 @@ pdfminer.six==20221105
 sentence-transformers==2.6.1
 qdrant-client==1.9.1
 tqdm==4.66.4
+llama-cpp-python[metal]==0.2.71 

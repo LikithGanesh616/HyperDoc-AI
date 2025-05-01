@@ -1,5 +1,6 @@
 from sentence_transformers import SentenceTransformer
 from qdrant_client import QdrantClient, models
+from qdrant_client.http.exceptions import UnexpectedResponse
 from typing import List
 import hashlib
 import os
@@ -10,12 +11,20 @@ COLLECTION = "hyperdoc_chunks"
 _model = SentenceTransformer(MODEL_NAME)
 _qdrant = QdrantClient(url=os.getenv("QDRANT_URL", "http://localhost:6333"))
 
+
 def ensure_collection(dim: int = 1024):
-    if COLLECTION not in _qdrant.get_collections().collections:
+    collections = {c.name for c in _qdrant.get_collections().collections}
+    if COLLECTION in collections:
+        return
+    try:
         _qdrant.create_collection(
             collection_name=COLLECTION,
-            vectors_config=models.VectorParams(size=dim, distance=models.Distance.COSINE)
+            vectors_config=models.VectorParams(size=dim, distance=models.Distance.COSINE),
         )
+    except UnexpectedResponse as e:
+        # another ingest beat us to it – safe to ignore
+        if "already exists" not in str(e):
+            raise
 
 def chunk_text(text: str, chunk_size: int = 400, overlap: int = 50) -> List[str]:
     words = text.split()
