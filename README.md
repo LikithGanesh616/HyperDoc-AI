@@ -130,18 +130,7 @@ HyperDoc-AI/
     └─ docker-compose.dev.yml
 ```
 
----
 
-## 🔮 Next Sprints
-
-1. **UI Polish**  
-   Animations, multi-page PDF viewer, message timestamps  
-2. **Model Tuning**  
-   Fine-tune Llama on domain data, integrate external web search  
-3. **Production Deployment**  
-   Containerize frontend + backend, set up CI/CD, secure & autoscale  
-
----
 
 ## 💼 Resume Highlights
 
