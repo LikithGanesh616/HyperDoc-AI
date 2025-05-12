@@ -5,3 +5,4 @@ sentence-transformers==2.6.1
 qdrant-client==1.9.1
 tqdm==4.66.4
 llama-cpp-python[metal]==0.2.71 
+huggingface_hub>=0.23
