@@ -2,7 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-/* default dark-mode background/text */
-body {
-  @apply bg-gray-900 text-gray-100;
+/* define CSS vars for light/dark */
+:root {
+  --bg-light: #ffffff;
+  --fg-light: #111827;
+  --bg-dark:  #1a1a1a;
+  --fg-dark:  #f3f4f6;
+}
+
+html {
+  background-color: var(--bg-light);
+  color:            var(--fg-light);
+  transition: background-color .3s, color .3s;
+}
+
+html.dark {
+  background-color: var(--bg-dark);
+  color:            var(--fg-dark);
 }

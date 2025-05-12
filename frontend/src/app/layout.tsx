@@ -1,19 +1,19 @@
-// src/app/layout.ts
-import "./globals.css"
-import type { ReactNode } from "react";
+// frontend/src/app/layout.tsx
+import './globals.css'
+import Header from '@/components/Header'
+import { ReactNode } from 'react'
 
 export const metadata = {
-  title: "HyperDoc AI",
-  description: "Chat with your PDFs locally",
-};
-
+  title: 'Hyperdoc AI',
+}
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-gray-900 text-gray-100">
-        {children}
+      <body className="min-h-screen transition-colors duration-300">
+        <Header />
+        <main className="p-4">{children}</main>
       </body>
     </html>
-  );
+  )
 }

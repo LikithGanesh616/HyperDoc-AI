@@ -1,42 +1,55 @@
 // frontend/src/components/ChatBox.tsx
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { streamSSE } from "../lib/sse";
 
-export default function ChatBox() {
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer]   = useState("");
-  const [loading, setLoading] = useState(false);
+interface ChatBoxProps {
+  disabled: boolean;
+}
 
-  async function ask() {
+export default function ChatBox({ disabled }: ChatBoxProps) {
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+
+  async function handleAsk() {
+    if (disabled || !question) return;
     setAnswer("");
-    setLoading(true);
     try {
       await streamSSE(
-        "",                // unused baseUrl
-        { question },      // payload only for query-string
-        (tok) => setAnswer(a => a + tok),
-        () => setLoading(false),
+        "http://localhost:8001/chat/stream",
+        { question },
+        (tok) => setAnswer((a) => a + tok),
+        () => {}
       );
-    } catch (e: any) {
-      console.error("SSE error:", e);
-      setAnswer("❌ Failed to fetch answer.");
-      setLoading(false);
+    } catch (err: any) {
+      console.error(err);
+      setAnswer("❌ Failed to load answer.");
     }
   }
 
   return (
-    <div>
+    <div className="flex flex-col space-y-4">
       <textarea
+        rows={3}
+        disabled={disabled}
+        placeholder={disabled ? "Upload a PDF first" : "Type your question…"}
         value={question}
-        onChange={e => setQuestion(e.target.value)}
-        placeholder="Ask a question…"
+        onChange={(e) => setQuestion(e.target.value)}
+        className="w-full p-2 border rounded-lg bg-white dark:bg-gray-800 dark:text-gray-100"
       />
-      <button onClick={ask} disabled={!question || loading}>
-        {loading ? "Thinking…" : "Ask"}
+
+      <button
+        onClick={handleAsk}
+        disabled={disabled || !question}
+        className="self-end bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded disabled:opacity-50"
+      >
+        Ask
       </button>
-      <pre>{answer}</pre>
+
+      <pre className="whitespace-pre-wrap bg-white dark:bg-gray-800 p-4 rounded-lg text-gray-900 dark:text-gray-100">
+        {answer}
+      </pre>
     </div>
   );
 }
